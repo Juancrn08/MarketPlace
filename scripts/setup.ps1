@@ -23,5 +23,8 @@ if (-not (Test-Path ".env")) {
 
 Write-Host "Configuracion completada!" -ForegroundColor Green
 
+Write-Host "Configurando base de datos..." -ForegroundColor Yellow
+npm run setup-db
+
 Write-Host "Iniciando la aplicación..." -ForegroundColor Yellow
 npm run dev

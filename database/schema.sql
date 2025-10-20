@@ -2,11 +2,11 @@
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    phone VARCHAR(20)
+    phone VARCHAR(20),
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
-    user_type VARCHAR(20) CHECK (user_type IN ('custome', 'mipyme', 'admin', 'moderator')),
+    user_type VARCHAR(20) CHECK (user_type IN ('customer', 'mipyme', 'admin', 'moderator')),
     is_verified BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS mipymes (
     is_verified BOOLEAN DEFAULT FALSE,
     rating DECIMAL(3,2) DEFAULT 0.0,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 -- Categorias
 CREATE TABLE IF NOT EXISTS categories(
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS categories(
 -- Productos
 CREATE TABLE IF NOT EXISTS products(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    mipyme_id UUID REFERENCES mipyme(id),
+    mipyme_id UUID REFERENCES mipymes(id),
     category_id UUID REFERENCES categories(id),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS products(
 CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_number VARCHAR(50) UNIQUE NOT NULL,
-    user_id UUID REFERENCES user(id),
+    user_id UUID REFERENCES users(id),
     total_amount DECIMAL(10,2) NOT NULL,
     currency VARCHAR(3) DEFAULT 'CUP',
     status VARCHAR(50) DEFAULT 'pending',
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 
 -- Indices
-CREATE INDEX IF NOT EXISTS idx_products_mipyme ON products (mipyme_id);
-CREATE INDEX IF NOT EXISTS idx_products_category ON products (category_id);
-CREATE INDEX IF NOT EXISTS idx_orders_user ON orders (user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_user ON orders (status);
+CREATE INDEX IF NOT EXISTS idx_products_mipyme ON products(mipyme_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
